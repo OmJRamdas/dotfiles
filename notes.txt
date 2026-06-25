@@ -1,0 +1,169 @@
+// Important  key binds
+
+// WEZTERM
+
+--- Tabs ---
+Ctrl+Shift+T        new tab
+Ctrl+Shift+W        close tab
+Ctrl+Shift+[        previous tab
+Ctrl+Shift+]        next tab
+Ctrl+Shift+1-9      switch to tab by number
+
+--- Panes ---
+Ctrl+Shift+Alt+%    split horizontally (side by side)
+Ctrl+Shift+Alt+"    split vertically (top/bottom)
+Ctrl+Shift+Arrow    move between panes
+Ctrl+Shift+Alt+Z    zoom/unzoom pane
+Ctrl+Shift+W        close pane
+
+--- Copy/Paste ---
+Ctrl+Shift+C        copy selection
+Ctrl+Shift+V        paste
+Ctrl+Shift+X        enter copy mode
+Ctrl+Shift+Space    quick select (auto-highlight paths, URLs, etc)
+
+--- Misc ---
+Ctrl+Shift+=        increase font size
+Ctrl+Shift+-        decrease font size
+Ctrl+Shift+0        reset font size
+Ctrl+Shift+F        search
+Ctrl+Shift+R        reload config
+
+// TMUX
+prefix key = Ctrl+b (press this before every tmux command)
+
+--- Sessions ---
+tmux                      start new session
+tmux new -s name          start named session
+tmux ls                   list sessions
+tmux attach -t name       attach to session
+tmux kill-session -t name kill session
+prefix + $                rename session
+prefix + d                detach from session
+prefix + s                switch session (interactive)
+
+--- Windows (tabs) ---
+prefix + c                new window
+prefix + ,                rename window
+prefix + &                close window
+prefix + n                next window
+prefix + p                previous window
+prefix + 0-9              switch to window by number
+prefix + w                list windows (interactive)
+
+--- Panes (splits) ---
+prefix + %                split vertically (side by side)
+prefix + "                split horizontally (top/bottom)
+prefix + arrow keys       move between panes
+prefix + x                close pane
+prefix + z                zoom/unzoom pane (fullscreen toggle)
+prefix + {                swap pane left
+prefix + }                swap pane right
+prefix + q                show pane numbers
+
+--- Copy mode ---
+prefix + [                enter copy mode (scroll/search)
+q                         exit copy mode
+/                         search forward
+?                         search backward
+Space                     start selection
+Enter                     copy selection
+prefix + ]                paste
+
+// Telescope
+<leader>ff    find files
+<leader>fg    live grep (search text in project)
+<leader>fb    list open buffers
+(inside telescope)
+Ctrl+j/k      move up/down results
+Enter         open selected
+Ctrl+x        open in horizontal split
+Ctrl+v        open in vertical split
+Ctrl+t        open in new tab
+Esc           close
+
+// LSP (built-in keymaps, set these in on_attach)
+gd            go to definition
+gD            go to declaration
+gr            go to references
+gi            go to implementation
+K             hover documentation
+<leader>rn    rename symbol
+<leader>ca    code action
+[d            previous diagnostic
+]d            next diagnostic
+<leader>e     show diagnostic in float
+
+Keyboard selection
+  1. Enter copy mode: Ctrl+Shift+X
+  2. Navigate to the filepath with vim-style keys (h/j/k/l)
+  3. Press v to start selection, move to end of path
+  4. Press y to yank (copy) and exit copy mode
+
+// NVIM Navigation
+
+--- Basic Movement ---
+h         move left
+l         move right
+j         move down
+k         move up
+
+--- Word Movement ---
+w         next word start
+W         next WORD start (ignores punctuation)
+b         previous word start
+B         previous WORD start
+e         next word end
+E         next WORD end
+ge        previous word end
+
+--- Line Movement ---
+0         start of line (column 0)
+^         first non-blank character of line
+$         end of line
+g_        last non-blank character of line
+
+--- Horizontal ---
+f{char}   jump forward to char on line
+F{char}   jump backward to char on line
+t{char}   jump forward to before char
+T{char}   jump backward to before char
+;         repeat last f/F/t/T forward
+,         repeat last f/F/t/T backward
+
+--- Vertical ---
+gg        go to first line
+G         go to last line
+{N}G      go to line N
+{N}j/k    move N lines down/up
+Ctrl+d    scroll half page down
+Ctrl+u    scroll half page up
+Ctrl+f    scroll full page down
+Ctrl+b    scroll full page up
+{         jump to previous empty line (paragraph up)
+}         jump to next empty line (paragraph down)
+
+--- Screen Position ---
+H         move cursor to top of screen
+M         move cursor to middle of screen
+L         move cursor to bottom of screen
+zz        center screen on cursor
+zt        scroll cursor to top
+zb        scroll cursor to bottom
+
+--- Marks & Jumps ---
+m{a-z}    set mark
+`{a-z}    jump to mark (exact position)
+'{a-z}    jump to mark (start of line)
+``        jump to position before last jump
+''        jump to line before last jump
+Ctrl+o    jump back in jump list
+Ctrl+i    jump forward in jump list
+
+--- Search ---
+/{pattern}   search forward
+?{pattern}   search backward
+n            next match
+N            previous match
+*            search word under cursor forward
+#            search word under cursor backward
