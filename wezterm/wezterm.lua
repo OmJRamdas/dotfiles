@@ -35,6 +35,8 @@ config.colors = {
     "#ebbcba", -- bright cyan
     "#e0def4", -- bright white
   },
+  selection_fg = "#191724",
+  selection_bg = "#ea9d34",
 }
 
 -- window
@@ -45,6 +47,14 @@ config.window_background_opacity = 0.9
 
 
 -- keybinds
--- config.keys = {}
+config.keys = {
+  { key = "c",          mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+  { key = "{",          mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
+  { key = "}",          mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(1) },
+  { key = "UpArrow",    mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
+  { key = "DownArrow",  mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Down") },
+  { key = "LeftArrow",  mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Left") },
+  { key = "RightArrow", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Right") },
+}
 
 return config

@@ -1,12 +1,17 @@
 // Important  key binds
 
+// CLI Commands
+
+realpath <file>    resolve absolute path of a file, following symlinks
+
+
 // WEZTERM
 
 --- Tabs ---
-Ctrl+Shift+T        new tab
-Ctrl+Shift+W        close tab
-Ctrl+Shift+[        previous tab
-Ctrl+Shift+]        next tab
+Ctrl+Shift+C        new tab
+Ctrl+Shift+X        close tab
+Ctrl+Shift+[        previous tab (sends {)
+Ctrl+Shift+]        next tab (sends })
 Ctrl+Shift+1-9      switch to tab by number
 
 --- Panes ---
@@ -30,7 +35,7 @@ Ctrl+Shift+F        search
 Ctrl+Shift+R        reload config
 
 // TMUX
-prefix key = Ctrl+b (press this before every tmux command)
+prefix key = Ctrl+Space (press this before every tmux command)
 
 --- Sessions ---
 tmux                      start new session
@@ -46,29 +51,28 @@ prefix + s                switch session (interactive)
 prefix + c                new window
 prefix + ,                rename window
 prefix + &                close window
-prefix + n                next window
-prefix + p                previous window
+prefix + [                previous window
+prefix + ]                next window
 prefix + 0-9              switch to window by number
-prefix + w                list windows (interactive)
+prefix + l                list windows (interactive)
 
 --- Panes (splits) ---
 prefix + %                split vertically (side by side)
 prefix + "                split horizontally (top/bottom)
 prefix + arrow keys       move between panes
-prefix + x                close pane
+prefix + w                close pane
 prefix + z                zoom/unzoom pane (fullscreen toggle)
 prefix + {                swap pane left
 prefix + }                swap pane right
 prefix + q                show pane numbers
 
 --- Copy mode ---
-prefix + [                enter copy mode (scroll/search)
-q                         exit copy mode
+prefix + x                enter copy mode
+q / Escape                exit copy mode
+v                         start selection
+y                         copy selection and exit
 /                         search forward
 ?                         search backward
-Space                     start selection
-Enter                     copy selection
-prefix + ]                paste
 
 // Telescope
 <leader>ff    find files
