@@ -29,9 +29,7 @@ require("lazy").setup({
 if vim.fn.has("nvim-0.10") == 1 then
   require("mason").setup()
   require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "pyright" } })
-  local lspconfig = require("lspconfig")
-  lspconfig.lua_ls.setup({})
-  lspconfig.pyright.setup({})
+  vim.lsp.enable({ "lua_ls", "pyright" })
 end
 
 -- telescope keymaps
