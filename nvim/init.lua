@@ -23,6 +23,13 @@ require("lazy").setup({
   { "williamboman/mason.nvim", cond = vim.fn.has("nvim-0.10") == 1 },
   { "williamboman/mason-lspconfig.nvim", cond = vim.fn.has("nvim-0.10") == 1 },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("nvim-tree").setup()
+    end,
+  },
 })
 
 -- mason + lsp (requires nvim 0.10+)
@@ -39,6 +46,19 @@ if vim.fn.has("nvim-0.11") == 1 then
   vim.keymap.set("n", "<leader>fg", t.live_grep)
   vim.keymap.set("n", "<leader>fb", t.buffers)
 end
+
+-- nvim-tree keymaps
+vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
+
+-- markdown: wrap at word boundaries and indent wrapped lines under text
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+  end,
+})
 
 -- modules
 -- require("config.keymaps")
