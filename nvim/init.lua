@@ -30,6 +30,13 @@ require("lazy").setup({
       require("nvim-tree").setup()
     end,
   },
+  {
+    "NeogitOrg/neogit",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("neogit").setup()
+    end,
+  },
 })
 
 -- mason + lsp (requires nvim 0.10+)
@@ -38,6 +45,17 @@ if vim.fn.has("nvim-0.10") == 1 then
   require("mason-lspconfig").setup({ ensure_installed = { "lua_ls", "pyright" } })
   vim.lsp.enable({ "lua_ls", "pyright" })
 end
+
+-- treesitter highlighting (main branch API: install parsers, then enable
+-- highlighting per filetype via core vim.treesitter.start())
+local ts_filetypes = { "markdown", "lua", "python", "bash", "c", "cpp", "rust" }
+require("nvim-treesitter").install({ "markdown_inline", unpack(ts_filetypes) })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = ts_filetypes,
+  callback = function()
+    vim.treesitter.start()
+  end,
+})
 
 -- telescope keymaps
 if vim.fn.has("nvim-0.11") == 1 then
@@ -49,6 +67,9 @@ end
 
 -- nvim-tree keymaps
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
+
+-- neogit keymaps
+vim.keymap.set("n", "<leader>g", "<cmd>Neogit<CR>")
 
 -- markdown: wrap at word boundaries and indent wrapped lines under text
 vim.api.nvim_create_autocmd("FileType", {

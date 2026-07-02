@@ -15,6 +15,39 @@ link() {
   echo "linked $dst -> $src"
 }
 
+setup_ssh_agent() {
+  local marker="# >>> dotfiles ssh-agent autostart >>>"
+  local bashrc="$HOME/.bashrc"
+  if grep -qF "$marker" "$bashrc" 2>/dev/null; then
+    echo "ssh-agent autostart already in $bashrc"
+    return
+  fi
+  echo "adding ssh-agent autostart to $bashrc"
+  cat >> "$bashrc" << 'EOF'
+
+# >>> dotfiles ssh-agent autostart >>>
+SSH_ENV="$HOME/.ssh/agent-env"
+
+start_ssh_agent() {
+    ssh-agent -s > "$SSH_ENV"
+    chmod 600 "$SSH_ENV"
+    source "$SSH_ENV" > /dev/null
+    ssh-add ~/.ssh/id_ed25519 2>/dev/null
+}
+
+if [ -f "$SSH_ENV" ]; then
+    source "$SSH_ENV" > /dev/null
+    ssh-add -l > /dev/null 2>&1
+    if [ $? -eq 2 ]; then
+        start_ssh_agent
+    fi
+else
+    start_ssh_agent
+fi
+# <<< dotfiles ssh-agent autostart <<<
+EOF
+}
+
 NVIM_VERSION="v0.11.2"
 
 install_neovim() {
@@ -37,6 +70,7 @@ install_neovim() {
 }
 
 install_neovim
+setup_ssh_agent
 
 mkdir -p "$CONFIG"
 

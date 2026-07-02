@@ -86,6 +86,37 @@ Ctrl+v        open in vertical split
 Ctrl+t        open in new tab
 Esc           close
 
+// Neogit
+<leader>g     open Neogit status buffer
+
+(inside Neogit status buffer)
+j / k         move down/up
+Tab           toggle/expand item (diff, hunk, folder)
+Enter         go to file at point
+s             stage
+S             stage all unstaged
+u             unstage
+U             unstage all staged
+x             discard change
+q             close
+<c-r>         refresh buffer
+$             command history
+?             help popup (shows all popups below)
+
+(popups - open a menu of further options)
+c             commit popup
+p             pull popup
+P             push popup
+f             fetch popup
+l             log popup
+b             branch popup
+r             rebase popup
+Z             stash popup
+d             diff popup
+m             merge popup
+v             revert popup
+X             reset popup
+
 // LSP (built-in keymaps, set these in on_attach)
 gd            go to definition
 gD            go to declaration
