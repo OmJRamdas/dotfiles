@@ -117,6 +117,10 @@ m             merge popup
 v             revert popup
 X             reset popup
 
+// Gitsigns
+<leader>hb    show blame for current line (popup, full commit message)
+<leader>tb    toggle inline current-line blame (virtual text)
+
 // LSP (built-in keymaps, set these in on_attach)
 gd            go to definition
 gD            go to declaration
@@ -127,7 +131,7 @@ K             hover documentation
 <leader>ca    code action
 [d            previous diagnostic
 ]d            next diagnostic
-<leader>e     show diagnostic in float
+<leader>de    show diagnostic in float
 
 Keyboard selection
   1. Enter copy mode: Ctrl+Shift+X

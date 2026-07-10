@@ -69,7 +69,23 @@ install_neovim() {
   echo "nvim $(nvim --version | head -1) installed"
 }
 
+install_ripgrep() {
+  if command -v rg &>/dev/null; then
+    echo "ripgrep already installed"
+    return
+  fi
+  echo "installing ripgrep..."
+  if command -v brew &>/dev/null; then
+    brew install ripgrep
+  elif command -v apt &>/dev/null; then
+    sudo apt install -y ripgrep
+  else
+    echo "no supported package manager found, install ripgrep manually" >&2
+  fi
+}
+
 install_neovim
+install_ripgrep
 setup_ssh_agent
 
 mkdir -p "$CONFIG"
