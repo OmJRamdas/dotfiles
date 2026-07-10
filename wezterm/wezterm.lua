@@ -3,7 +3,7 @@ local config = wezterm.config_builder()
 
 -- appearance
 config.color_scheme = "rose-pine"
-config.font = wezterm.font("JetBrains Mono", { weight = "Regular" })
+config.font = wezterm.font("Cascadia Code", { weight = "Regular" })
 config.font_size = 14.0
 config.line_height = 1.2
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }

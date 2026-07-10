@@ -5,6 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.termguicolors = true
+vim.opt.showmode = false -- lualine already shows the mode
 
 -- transparent background: let the terminal's background/theme (e.g. WezTerm) show through
 local function set_transparent_bg()
@@ -55,16 +56,53 @@ require("lazy").setup({
     end,
   },
   {
+    -- config style borrowed from LazyVim's lualine spec (lua/lazyvim/plugins/ui.lua),
+    -- adapted since we don't have LazyVim's icons/root_dir/Snacks/noice/dap helpers
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
+      -- explicit theme instead of "auto": with no colorscheme installed, "auto"
+      -- gives every mode the same dull grey, so the section-a box/arrow has no
+      -- contrast against section b in normal mode. Fixed colors per mode, with
+      -- b/c held constant, keep the same box shape in every mode.
+      local bg = "#1a1b26"
+      local bg2 = "#24283b"
+      local fg = "#c0caf5"
+      local function mode_hl(color)
+        return {
+          a = { bg = color, fg = bg, gui = "bold" },
+          b = { bg = bg2, fg = fg },
+          c = { bg = bg, fg = fg },
+        }
+      end
+      local lualine_theme = {
+        normal = mode_hl("#3b82f6"), -- blue
+        insert = mode_hl("#f97316"), -- orange
+        visual = mode_hl("#a855f7"), -- purple
+        replace = mode_hl("#ef4444"), -- red
+        command = mode_hl("#eab308"), -- yellow
+        terminal = mode_hl("#10b981"), -- green
+        inactive = {
+          a = { bg = bg, fg = "#565f89" },
+          b = { bg = bg, fg = "#565f89" },
+          c = { bg = bg, fg = "#565f89" },
+        },
+      }
+
       require("lualine").setup({
         options = {
-          theme = "auto",
+          theme = lualine_theme,
           globalstatus = true,
         },
         sections = {
-          lualine_a = { "mode" },
+          lualine_a = {
+            {
+              -- pad every mode name to the same width so sections to the
+              -- right don't shift when switching NORMAL/INSERT/VISUAL/etc.
+              "mode",
+              fmt = function(str) return string.format("%-8s", str) end,
+            },
+          },
           lualine_b = {
             "branch",
             {
@@ -78,18 +116,38 @@ require("lazy").setup({
               end,
               icon = "",
             },
-            "diff",
-            "diagnostics",
           },
           lualine_c = {
-            -- current working directory
+            -- current working directory (LazyVim calls this "root_dir")
             { function() return vim.fn.fnamemodify(vim.fn.getcwd(), ":~") end, icon = "" },
+            {
+              "diagnostics",
+              symbols = { error = " ", warn = " ", info = " ", hint = " " },
+            },
+            { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
             { "filename", path = 1 },
           },
-          lualine_x = { "filetype" },
-          lualine_y = { "progress" },
-          lualine_z = { "location" },
+          lualine_x = {
+            {
+              "diff",
+              symbols = { added = "+", modified = "~", removed = "-" },
+              source = function()
+                local gitsigns = vim.b.gitsigns_status_dict
+                if gitsigns then
+                  return { added = gitsigns.added, modified = gitsigns.changed, removed = gitsigns.removed }
+                end
+              end,
+            },
+          },
+          lualine_y = {
+            { "progress", separator = " ", padding = { left = 1, right = 0 } },
+            { "location", padding = { left = 0, right = 1 } },
+          },
+          lualine_z = {
+            function() return " " .. os.date("%R") end,
+          },
         },
+        extensions = { "nvim-tree", "lazy" },
       })
     end,
   },
