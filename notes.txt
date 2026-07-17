@@ -117,9 +117,30 @@ m             merge popup
 v             revert popup
 X             reset popup
 
+// Diffview (merge conflict resolution)
+<leader>do    open Diffview (3-way merge view during conflicts)
+<leader>dc    close Diffview
+<leader>dh    file history for current file
+
+(inside merge conflict view)
+]x / [x       next/previous conflict
+<leader>co    choose OURS for conflict hunk
+<leader>ct    choose THEIRS for conflict hunk
+<leader>cb    choose BASE for conflict hunk
+<leader>ca    choose ALL (ours+theirs) for conflict hunk
+dp            diffput (push change to other buffer)
+do            diffget (pull change from other buffer, only in diff windows)
+
+// Copy file:line reference (e.g. for pasting into a Claude prompt)
+<leader>cl    (normal) copy "path:line" to clipboard
+<leader>cl    (visual, select lines first) copy "path:start-end" to clipboard
+
 // Gitsigns
 <leader>hb    show blame for current line (popup, full commit message)
 <leader>tb    toggle inline current-line blame (virtual text)
+
+// Diff panels
+<leader>sb    toggle scrollbind/cursorbind (scroll diffview panels independently)
 
 // LSP (built-in keymaps, set these in on_attach)
 gd            go to definition

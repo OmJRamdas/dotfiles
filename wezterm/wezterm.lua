@@ -18,7 +18,7 @@ config.colors = {
   ansi = {
     "#191724", -- black
     "#eb6f92", -- red
-    "#31748f", -- green
+    "#3daa5c", -- green (rose-pine has no true green; picked to read as actual green)
     "#f6c177", -- yellow
     "#ea9d34", -- orange (was blue)
     "#c4a7e7", -- magenta
@@ -28,7 +28,7 @@ config.colors = {
   brights = {
     "#26233a", -- bright black
     "#eb6f92", -- bright red
-    "#31748f", -- bright green
+    "#4fc76c", -- bright green
     "#f6c177", -- bright yellow
     "#f4b460", -- bright orange (was bright blue)
     "#c4a7e7", -- bright magenta

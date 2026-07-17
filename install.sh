@@ -84,8 +84,59 @@ install_ripgrep() {
   fi
 }
 
+install_fzf() {
+  if command -v fzf &>/dev/null; then
+    echo "fzf already installed"
+  else
+    echo "installing fzf..."
+    if command -v brew &>/dev/null; then
+      brew install fzf
+    elif command -v apt &>/dev/null; then
+      sudo apt install -y fzf
+    else
+      echo "no supported package manager found, install fzf manually" >&2
+      return
+    fi
+  fi
+
+  local marker="# >>> dotfiles fzf keybindings >>>"
+  local bashrc="$HOME/.bashrc"
+  if grep -qF "$marker" "$bashrc" 2>/dev/null; then
+    echo "fzf keybindings already in $bashrc, removing stale block to refresh it"
+    sed -i "/^${marker}$/,/^# <<< dotfiles fzf keybindings <<<$/d" "$bashrc"
+  fi
+  echo "adding fzf keybindings to $bashrc"
+  cat >> "$bashrc" << 'EOF'
+
+# >>> dotfiles fzf keybindings >>>
+# fuzzy Ctrl-R history search / Ctrl-T file search
+# fzf >= 0.48 supports `fzf --bash`; older distro-packaged fzf (e.g. Ubuntu's/
+# Debian's apt version) ships static key-bindings/completion scripts instead.
+# NOTE: never probe by running `fzf --bash` directly on an unknown version -
+# older fzf doesn't recognize the flag and falls through to its normal
+# interactive mode, silently reading your real terminal stdin. Compare the
+# version string instead.
+if command -v fzf &>/dev/null; then
+  __fzf_ver="$(fzf --version 2>/dev/null | awk '{print $1}')"
+  if [ -n "$__fzf_ver" ] && [ "$(printf '%s\n%s\n' "$__fzf_ver" "0.48.0" | sort -V | tail -n1)" = "$__fzf_ver" ]; then
+    eval "$(fzf --bash)"
+  else
+    for f in /usr/share/doc/fzf/examples/key-bindings.bash /opt/homebrew/opt/fzf/shell/key-bindings.bash; do
+      [ -f "$f" ] && source "$f"
+    done
+    for f in /usr/share/bash-completion/completions/fzf /opt/homebrew/opt/fzf/shell/completion.bash; do
+      [ -f "$f" ] && source "$f"
+    done
+  fi
+  unset __fzf_ver
+fi
+# <<< dotfiles fzf keybindings <<<
+EOF
+}
+
 install_neovim
 install_ripgrep
+install_fzf
 setup_ssh_agent
 
 mkdir -p "$CONFIG"

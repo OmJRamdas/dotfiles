@@ -7,9 +7,27 @@ vim.opt.expandtab = true
 vim.opt.termguicolors = true
 vim.opt.showmode = false -- lualine already shows the mode
 
+-- clipboard: no xclip/xsel/wl-copy installed, so use OSC52 (terminal escape
+-- codes) instead. WezTerm supports OSC52 natively, so yanks reach the real
+-- system clipboard with no external dependency, even over SSH.
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
+
 -- transparent background: let the terminal's background/theme (e.g. WezTerm) show through
 local function set_transparent_bg()
-  for _, group in ipairs({ "Normal", "NormalNC", "NormalFloat", "SignColumn", "EndOfBuffer" }) do
+  for _, group in ipairs({
+    "Normal", "NormalNC", "NormalFloat", "SignColumn", "EndOfBuffer",
+    "LineNr", "CursorLineNr", "FoldColumn", "GitSignsAdd", "GitSignsChange", "GitSignsDelete",
+  }) do
     vim.api.nvim_set_hl(0, group, { bg = "none" })
   end
 end
@@ -34,6 +52,14 @@ require("lazy").setup({
   { "williamboman/mason-lspconfig.nvim", cond = vim.fn.has("nvim-0.10") == 1 },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   {
+    "rebelot/kanagawa.nvim",
+    priority = 1000,
+    config = function()
+      require("kanagawa").setup({ transparent = true })
+      vim.cmd.colorscheme("kanagawa")
+    end,
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
@@ -56,42 +82,42 @@ require("lazy").setup({
     end,
   },
   {
+    "sindrets/diffview.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("diffview").setup()
+    end,
+  },
+  {
     -- config style borrowed from LazyVim's lualine spec (lua/lazyvim/plugins/ui.lua),
     -- adapted since we don't have LazyVim's icons/root_dir/Snacks/noice/dap helpers
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      -- explicit theme instead of "auto": with no colorscheme installed, "auto"
-      -- gives every mode the same dull grey, so the section-a box/arrow has no
-      -- contrast against section b in normal mode. Fixed colors per mode, with
-      -- b/c held constant, keep the same box shape in every mode.
-      local bg = "#1a1b26"
-      local bg2 = "#24283b"
-      local fg = "#c0caf5"
-      local function mode_hl(color)
-        return {
-          a = { bg = color, fg = bg, gui = "bold" },
-          b = { bg = bg2, fg = fg },
-          c = { bg = bg, fg = fg },
-        }
+      -- start from kanagawa's own lualine theme, then punch up the "a" section
+      -- (mode indicator) with stronger, more saturated colors per mode.
+      local ok, theme = pcall(require, "lualine.themes.kanagawa")
+      if not ok then
+        theme = require("lualine.themes.auto")
       end
-      local lualine_theme = {
-        normal = mode_hl("#3b82f6"), -- blue
-        insert = mode_hl("#f97316"), -- orange
-        visual = mode_hl("#a855f7"), -- purple
-        replace = mode_hl("#ef4444"), -- red
-        command = mode_hl("#eab308"), -- yellow
-        terminal = mode_hl("#10b981"), -- green
-        inactive = {
-          a = { bg = bg, fg = "#565f89" },
-          b = { bg = bg, fg = "#565f89" },
-          c = { bg = bg, fg = "#565f89" },
-        },
+      local strong = {
+        normal = "#7e9cd8",
+        insert = "#ff9e3b", -- orange
+        visual = "#957fb8",
+        replace = "#e46876",
+        command = "#e6c384",
+        terminal = "#98bb6c",
       }
+      for mode, color in pairs(strong) do
+        if theme[mode] and theme[mode].a then
+          theme[mode].a.bg = color
+          theme[mode].a.gui = "bold"
+        end
+      end
 
       require("lualine").setup({
         options = {
-          theme = lualine_theme,
+          theme = theme,
           globalstatus = true,
         },
         sections = {
@@ -206,9 +232,36 @@ vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>")
 -- neogit keymaps
 vim.keymap.set("n", "<leader>g", "<cmd>Neogit<CR>")
 
+-- diffview keymaps (merge conflict resolution)
+vim.keymap.set("n", "<leader>do", "<cmd>DiffviewOpen<CR>")
+vim.keymap.set("n", "<leader>dc", "<cmd>DiffviewClose<CR>")
+vim.keymap.set("n", "<leader>dh", "<cmd>DiffviewFileHistory %<CR>")
+
+-- copy "path:line" (normal mode) or "path:startLine-endLine" (visual mode)
+-- to the system clipboard, e.g. to paste into a Claude prompt as a reference.
+local function yank_file_line_ref()
+  local path = vim.fn.expand("%")
+  local mode = vim.fn.mode()
+  local ref
+  if mode == "v" or mode == "V" or mode == "\22" then
+    vim.cmd("normal! \27") -- exit visual mode so '< '> marks are set
+    local s = vim.fn.line("'<")
+    local e = vim.fn.line("'>")
+    ref = (s == e) and (path .. ":" .. s) or (path .. ":" .. s .. "-" .. e)
+  else
+    ref = path .. ":" .. vim.fn.line(".")
+  end
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied " .. ref)
+end
+vim.keymap.set({ "n", "v" }, "<leader>cl", yank_file_line_ref)
+
 -- gitsigns keymaps
 vim.keymap.set("n", "<leader>hb", function() require("gitsigns").blame_line({ full = true }) end)
 vim.keymap.set("n", "<leader>tb", function() require("gitsigns").toggle_current_line_blame() end)
+
+-- toggle scrollbind/cursorbind (e.g. to scroll diffview panels independently)
+vim.keymap.set("n", "<leader>sb", "<cmd>set scb! crb!<CR>", { desc = "Toggle scrollbind/cursorbind" })
 
 -- markdown: wrap at word boundaries and indent wrapped lines under text
 vim.api.nvim_create_autocmd("FileType", {
