@@ -1,0 +1,35 @@
+onboarding = false
+# Herdr keybindings mirroring ~/.config/tmux/tmux.conf
+# See tmux.conf for the source mapping. Reload after editing with:
+#   herdr server reload-config
+# or the reload_config binding below.
+
+[keys]
+# tmux: unbind C-b; bind C-Space send-prefix
+prefix = "ctrl+space"
+
+# tmux: bind [ previous-window / bind ] next-window
+previous_tab = "prefix+["
+next_tab = "prefix+]"
+
+# tmux: bind Up/Left/Down/Right select-pane -U/-L/-D/-R
+focus_pane_up = "prefix+up"
+focus_pane_down = "prefix+down"
+focus_pane_left = "prefix+left"
+focus_pane_right = "prefix+right"
+
+# tmux: bind w kill-pane
+close_pane = "prefix+w"
+# default workspace_picker was also prefix+w; freed since tmux has no
+# equivalent binding. Use `goto` (prefix+g) for workspace switching instead.
+workspace_picker = ""
+
+# workspace nav: mirrors stock tmux's default prefix+( / prefix+) for
+# previous-session/next-session (never overridden in tmux.conf, so still
+# active there). switch_workspace uses shift since switch_tab already owns
+# plain prefix+1..9.
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+switch_workspace = "prefix+shift+1..9"
+
+reload_config = "prefix+shift+r"

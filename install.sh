@@ -15,6 +15,21 @@ link() {
   echo "linked $dst -> $src"
 }
 
+# Like link(), but for a single file rather than a whole directory. Use this
+# when the app's config dir also holds runtime state (logs, sockets, session
+# data) that shouldn't be pulled into the dotfiles repo.
+link_file() {
+  local src="$DOTFILES/$1"
+  local dst="$CONFIG/$2"
+  mkdir -p "$(dirname "$dst")"
+  if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+    echo "backing up $dst -> ${dst}.bak"
+    mv "$dst" "${dst}.bak"
+  fi
+  ln -sfn "$src" "$dst"
+  echo "linked $dst -> $src"
+}
+
 setup_ssh_agent() {
   local marker="# >>> dotfiles ssh-agent autostart >>>"
   local bashrc="$HOME/.bashrc"
@@ -144,6 +159,7 @@ mkdir -p "$CONFIG"
 link wezterm wezterm
 link nvim    nvim
 link tmux    tmux
+link_file herdr/config.toml herdr/config.toml
 
 echo "syncing neovim plugins..."
 nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
