@@ -22,7 +22,7 @@ focus_pane_right = "prefix+right"
 close_pane = "prefix+w"
 # default workspace_picker was also prefix+w; freed since tmux has no
 # equivalent binding. Use `goto` (prefix+g) for workspace switching instead.
-workspace_picker = ""
+workspace_picker = "prefix+w"
 
 # workspace nav: mirrors stock tmux's default prefix+( / prefix+) for
 # previous-session/next-session (never overridden in tmux.conf, so still
@@ -33,3 +33,8 @@ next_workspace = "prefix+)"
 switch_workspace = "prefix+shift+1..9"
 
 reload_config = "prefix+shift+r"
+
+# agent selection: unbound by default
+previous_agent = "prefix+alt+k"
+next_agent = "prefix+alt+j"
+focus_agent = "prefix+alt+1..9"

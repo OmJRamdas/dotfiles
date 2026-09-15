@@ -1,6 +1,11 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
+-- The apt build of wezterm (20240203) has an old Wayland client that crashes
+-- on newer Mutter with "Error while flushing display: Broken pipe".
+-- Run under XWayland instead until a newer wezterm is installed.
+config.enable_wayland = false
+
 -- appearance
 config.color_scheme = "rose-pine"
 config.font = wezterm.font("Cascadia Code", { weight = "Regular" })
@@ -49,6 +54,9 @@ config.window_background_opacity = 0.9
 -- keybinds
 config.keys = {
   { key = "c",          mods = "CTRL|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+  { key = "p",          mods = "CTRL|SHIFT", action = wezterm.action_callback(function(_, pane)
+    pane:move_to_new_tab()
+  end) },
   { key = "{",          mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
   { key = "}",          mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(1) },
   { key = "UpArrow",    mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
