@@ -11,6 +11,9 @@ prefix = "ctrl+space"
 # tmux: bind [ previous-window / bind ] next-window
 previous_tab = "prefix+["
 next_tab = "prefix+]"
+# default copy_mode is also prefix+[ (shadowed by previous_tab above);
+# tmux: bind x copy-mode
+copy_mode = "prefix+x"
 
 # tmux: bind Up/Left/Down/Right select-pane -U/-L/-D/-R
 focus_pane_up = "prefix+up"
@@ -38,3 +41,8 @@ reload_config = "prefix+shift+r"
 previous_agent = "prefix+alt+k"
 next_agent = "prefix+alt+j"
 focus_agent = "prefix+alt+1..9"
+
+# show what a Claude Code agent is actually doing (its dynamic terminal
+# title), plus which pane, instead of just the default icon/name rows.
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "machine", "workspace", "tab"], ["terminal_title_stripped"], ["agent", "pane"]]
