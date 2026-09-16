@@ -21,10 +21,10 @@ focus_pane_down = "prefix+down"
 focus_pane_left = "prefix+left"
 focus_pane_right = "prefix+right"
 
-# tmux: bind w kill-pane
-close_pane = "prefix+w"
-# default workspace_picker was also prefix+w; freed since tmux has no
-# equivalent binding. Use `goto` (prefix+g) for workspace switching instead.
+# tmux: bind w kill-pane. w now belongs to workspace_picker instead (kept
+# on prefix+w below), so close_pane moved to prefix+d; d is unbound by
+# default (only prefix+shift+d, close_workspace, uses that letter).
+close_pane = "prefix+d"
 workspace_picker = "prefix+w"
 
 # workspace nav: mirrors stock tmux's default prefix+( / prefix+) for
