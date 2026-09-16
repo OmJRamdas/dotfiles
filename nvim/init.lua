@@ -240,7 +240,15 @@ vim.keymap.set("n", "<leader>dh", "<cmd>DiffviewFileHistory %<CR>")
 -- copy "path:line" (normal mode) or "path:startLine-endLine" (visual mode)
 -- to the system clipboard, e.g. to paste into a Claude prompt as a reference.
 local function yank_file_line_ref()
-  local path = vim.fn.expand("%")
+  -- absolute path of the current file, then made relative to the git root
+  -- (falling back to cwd) so the ref is stable regardless of nvim's cwd.
+  local abs = vim.fn.expand("%:p")
+  local root = vim.fn.systemlist({ "git", "-C", vim.fn.expand("%:p:h"), "rev-parse", "--show-toplevel" })[1]
+  local base = (vim.v.shell_error == 0 and root ~= "" and root) or vim.fn.getcwd()
+  local path = abs
+  if abs:sub(1, #base + 1) == base .. "/" then
+    path = abs:sub(#base + 2)
+  end
   local mode = vim.fn.mode()
   local ref
   if mode == "v" or mode == "V" or mode == "\22" then
