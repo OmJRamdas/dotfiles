@@ -46,3 +46,8 @@ focus_agent = "prefix+alt+1..9"
 # title), plus which pane, instead of just the default icon/name rows.
 [ui.sidebar.agents.rows_by_agent]
 claude = [["state_icon", "machine", "workspace", "tab"], ["terminal_title_stripped"], ["agent", "pane"]]
+
+# only ping (sound) when an agent finishes/needs input in a workspace that
+# isn't the one currently in view, not the one I'm actively looking at
+[ui.sound]
+enabled = true
