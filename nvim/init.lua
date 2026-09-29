@@ -60,6 +60,14 @@ require("lazy").setup({
     end,
   },
   {
+    -- renders markdown inline (headings, code blocks, tables, checkboxes);
+    -- the line under the cursor stays raw so it's easy to edit
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ft = { "markdown" },
+    opts = {},
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
@@ -280,6 +288,9 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.breakindent = true
   end,
 })
+
+-- toggle inline markdown rendering
+vim.keymap.set("n", "<leader>mt", "<cmd>RenderMarkdown toggle<CR>", { desc = "Toggle markdown rendering" })
 
 -- modules
 -- require("config.keymaps")
